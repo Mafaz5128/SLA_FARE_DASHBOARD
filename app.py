@@ -113,7 +113,7 @@ def pax(FROM_CITY, TO_CITY, Month):
 
     xorder = ['03-Nov', '10-Nov', '17-Nov', '24-Nov', '01-Dec', '08-Dec', '15-Dec', '22-Dec', '29-Dec']
     row_1 = row.iloc[0, 21:40][::2]
-    row_2 = row.iloc[0, 22:41][::2]
+    row_2 = row.iloc[0, 22:40][::2]
     row_1_reversed = row_1.iloc[::-1]
     row_2_reversed = row_2.iloc[::-1]
     difference = row_2_reversed.values - row_1_reversed.values
