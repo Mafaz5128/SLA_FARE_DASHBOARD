@@ -158,24 +158,56 @@ def pax(FROM_CITY, TO_CITY, Month):
     difference = row_2_reversed.values - row_1_reversed.values
 
     # Plot using Plotly for Pax graph
-    fig1 = go.Figure()
+    fig3 = go.Figure()
 
     # Line for "Pax - TY"
-    fig1.add_trace(go.Scatter(x=xorder, y=row_1_reversed.values, mode='lines+markers', name="Pax - TY"))
+    fig3.add_trace(go.Scatter(x=xorder, y=row_1_reversed.values, mode='lines+markers', name="Pax - TY"))
 
     # Line for "Pax - LY"
-    fig1.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Pax - LY"))
+    fig3.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Pax - LY"))
 
     # Plot the Difference graph (LY - TY)
-    fig2 = go.Figure()
+    fig4 = go.Figure()
 
     # Add a line for the difference (LY - TY)
-    fig2.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (LY - TY)", line=dict(dash='dot')))
+    fig4.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (LY - TY)", line=dict(dash='dot')))
 
     # Add a horizontal line at y=0 to indicate the zero baseline
-    fig2.add_hline(y=0, line=dict(color='blue', dash='dash'), annotation_text="Zero Line", line_width=2)
+    fig4.add_hline(y=0, line=dict(color='blue', dash='dash'), annotation_text="Zero Line", line_width=2)
 
-    # Display the data table for pax
+    # Update layout for the Pax figure (Pax graph)
+    fig3.update_layout(
+        title=f"Behavior of Pax - {FROM_CITY} to {TO_CITY}",
+        xaxis_title="Snap Dates",
+        yaxis_title="Pax",
+        legend_title="Legend",
+        template="plotly_dark",
+        xaxis=dict(tickvals=xorder),
+        hovermode="x unified",
+        height=500,
+        width=None
+    )
+
+    # Display the Pax graph
+    st.plotly_chart(fig3, use_container_width=True)
+
+    # Update layout for the Difference graph (Pax)
+    fig4.update_layout(
+        title="Pax Difference (LY - TY)",
+        xaxis_title="Snap Dates",
+        yaxis_title="Difference in Pax",
+        legend_title="Legend",
+        template="plotly_dark",
+        xaxis=dict(tickvals=xorder),
+        hovermode="x unified",
+        height=500,
+        width=None
+    )
+
+    # Display the Difference graph (Pax)
+    st.plotly_chart(fig4, use_container_width=True)
+
+    # Display data in an interactive table for Pax
     st.subheader("Pax Data Table")
     pax_data = pd.DataFrame({
         'Date': xorder,
@@ -184,7 +216,7 @@ def pax(FROM_CITY, TO_CITY, Month):
         'Difference (LY - TY)': difference
     })
     
-    # Display the dataframe in an interactive table
+    # Display the dataframe for Pax
     st.dataframe(pax_data)
 
 # Streamlit button to trigger both functions
