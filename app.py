@@ -73,11 +73,13 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
             legend_title="Legend",
             template="plotly_dark",
             xaxis=dict(tickvals=xorder),
-            hovermode="x unified"
+            hovermode="x unified",
+            height=600,  # Increase the height of the graph
+            width=800    # Increase the width of the graph
         )
 
         # Display the first graph (Fare Average graph)
-        st.plotly_chart(fig1)
+        st.plotly_chart(fig1, use_container_width=True)
 
     # Plot the difference graph in the second column
     with col2:
@@ -94,11 +96,13 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
             legend_title="Legend",
             template="plotly_dark",
             xaxis=dict(tickvals=xorder),
-            hovermode="x unified"
+            hovermode="x unified",
+            height=600,  # Increase the height of the graph
+            width=800    # Increase the width of the graph
         )
 
         # Display the second graph (Difference graph)
-        st.plotly_chart(fig2)
+        st.plotly_chart(fig2, use_container_width=True)
 
     # Display data in an interactive table
     st.subheader("Fare Data Table")
