@@ -42,6 +42,12 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     row_1_reversed = row_1.iloc[::-1]  # Reverse the order of the row_1
     row_2_reversed = row_2.iloc[::-1]  # Reverse the order of the row_2
 
+    # Calculate the difference (LY - TY)
+    difference = row_2_reversed.values - row_1_reversed.values
+
+    # Determine the indicator (up or down)
+    indicator = ['⬆️' if diff > 0 else '⬇️' for diff in difference]
+
     # Plot using Plotly
     fig = go.Figure()
 
@@ -50,6 +56,9 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
 
     # Line for "Fare Average - LY"
     fig.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Fare Average - LY"))
+
+    # Plot the difference between LY and TY
+    fig.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (LY - TY)", line=dict(dash='dot')))
 
     # Add a horizontal line at the value of the selected row (e.g., index 0, column 3)
     horizontal_value = row.iloc[0, 3]  # Get the value from the specified cell
@@ -74,7 +83,9 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     fare_data = pd.DataFrame({
         'Date': xorder,
         'Fare Average - TY': row_1_reversed.values,
-        'Fare Average - LY': row_2_reversed.values
+        'Fare Average - LY': row_2_reversed.values,
+        'Difference (LY - TY)': difference,
+        'Indicator': indicator
     })
     
     # Display the dataframe in an interactive table
