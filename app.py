@@ -45,7 +45,7 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     row_2 = row.iloc[0, 5:22][::2]
     row_1_reversed = row_1.iloc[::-1]
     row_2_reversed = row_2.iloc[::-1]
-    difference = row_2_reversed.values - row_1_reversed.values
+    difference = row_1_reversed.values - row_2_reversed.values
 
     # Fare Average Graph
     fig1 = go.Figure()
@@ -68,10 +68,10 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
 
     # Fare Difference Graph
     fig2 = go.Figure()
-    fig2.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (LY - TY)", line=dict(dash='dot')))
+    fig2.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (TY - LY)", line=dict(dash='dot')))
     fig2.add_hline(y=0, line=dict(color='blue', dash='dash'), annotation_text="Zero Line")
     fig2.update_layout(
-        title="Difference (LY - TY)",
+        title="Difference (TY - LY)",
         xaxis_title="Snap Dates",
         yaxis_title="Difference in Fare (USD)",
         template="plotly_dark",
@@ -116,7 +116,7 @@ def pax(FROM_CITY, TO_CITY, Month):
     row_2 = row.iloc[0, 22:39][::2]
     row_1_reversed = row_1.iloc[::-1]
     row_2_reversed = row_2.iloc[::-1]
-    difference = row_2_reversed.values - row_1_reversed.values
+    difference = row_1_reversed.values - row_2_reversed.values
 
     # Pax Graph
     fig3 = go.Figure()
@@ -137,7 +137,7 @@ def pax(FROM_CITY, TO_CITY, Month):
 
     # Pax Difference Graph
     fig4 = go.Figure()
-    fig4.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (LY - TY)", line=dict(dash='dot')))
+    fig4.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (TY - LY)", line=dict(dash='dot')))
     fig4.add_hline(y=0, line=dict(color='blue', dash='dash'), annotation_text="Zero Line")
     fig4.update_layout(
         title="Pax Difference (LY - TY)",
@@ -156,7 +156,7 @@ def pax(FROM_CITY, TO_CITY, Month):
         'Date': xorder,
         'Pax - TY': row_1_reversed.values,
         'Pax - LY': row_2_reversed.values,
-        'Difference (LY - TY)': difference,
+        'Difference (TY - LY)': difference,
         'Trend': arrows
     })
     st.subheader("Pax Data Table")
