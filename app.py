@@ -222,4 +222,4 @@ def pax(FROM_CITY, TO_CITY, Month):
 # Streamlit button to trigger both functions
 if st.button('Generate Fare and Pax Graphs'):
     avg_fare(FROM_CITY, TO_CITY, Month)
-    pax(FROM_CITY, TO_CITY, Month)  add the indictor like arrow up and down in table according to difference for both table 
+    pax(FROM_CITY, TO_CITY, Month)
