@@ -148,12 +148,18 @@ def main():
 
     # Unique values for dropdowns
     from_city_options = df['FROM_CITY'].unique()
-    to_city_options = df['TO_CITY'].unique()
     month_options = df['Month'].unique()
 
-    # Streamlit widgets for selecting values
+    # Streamlit widget for selecting 'From City'
     FROM_CITY = st.selectbox('Select From City:', from_city_options)
+
+    # Filter 'TO_CITY' options based on 'FROM_CITY'
+    to_city_options = df[df['FROM_CITY'] == FROM_CITY]['TO_CITY'].unique()
+
+    # Streamlit widget for selecting 'To City'
     TO_CITY = st.selectbox('Select To City:', to_city_options)
+
+    # Streamlit widget for selecting the month
     Month = st.selectbox('Select Month:', month_options)
 
     # Call the avg_fare function when the user selects options
