@@ -3,6 +3,23 @@ import streamlit as st
 import plotly.graph_objects as go
 import numpy as np
 
+# Apply custom CSS to adjust the layout
+st.markdown(
+    """
+    <style>
+    .reportview-container {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+    }
+    .block-container {
+        padding: 1rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 def avg_fare(FROM_CITY, TO_CITY, Month):
     # Load data
     df = pd.read_excel('AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', header=3)
