@@ -73,7 +73,7 @@ def main():
     st.title('Average Fare Behavior Dashboard')
 
     # Load data for dropdowns
-    df = pd.read_excel('/content/AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', header=3)
+    df = pd.read_excel('AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', header=3)
 
     # Unique values for dropdowns
     from_city_options = df['FROM_CITY'].unique()
