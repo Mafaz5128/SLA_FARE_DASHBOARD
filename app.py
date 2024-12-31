@@ -4,7 +4,7 @@ import streamlit as st
 
 def avg_fare(FROM_CITY, TO_CITY, Month):
     # Load data
-    df = pd.read_excel('/content/AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', header=3)
+    df = pd.read_excel('AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', header=3)
     
     # Filter the data based on the provided month
     month = df[df["Month"] == Month]
