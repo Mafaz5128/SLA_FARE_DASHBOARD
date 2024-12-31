@@ -1,6 +1,8 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import streamlit as st
+import plotly.graph_objects as go
+from fbprophet import Prophet
+import numpy as np
 
 def avg_fare(FROM_CITY, TO_CITY, Month):
     # Load data
@@ -41,32 +43,70 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     row_1_reversed = row_1.iloc[::-1]  # Reverse the order of the row_1
     row_2_reversed = row_2.iloc[::-1]  # Reverse the order of the row_2
 
-    # Plot the time series
-    plt.figure(figsize=(12, 6))
+    # Prepare data for forecasting using Prophet
+    df_prophet = pd.DataFrame({
+        'ds': pd.to_datetime(xorder), 
+        'y': row_1_reversed.values
+    })
 
-    # Plot the first line
-    plt.plot(xorder, row_1_reversed.values, marker='o', label="Fare Average - TY")
+    # Initialize Prophet model
+    model = Prophet()
+    model.fit(df_prophet)
+    
+    # Make future predictions
+    future = model.make_future_dataframe(df_prophet, periods=5, freq='D')
+    forecast = model.predict(future)
+    
+    # Plot using Plotly
+    fig = go.Figure()
 
-    # Plot the second line
-    plt.plot(xorder, row_2_reversed.values, marker='s', label="Fare Average - LY")
+    # Line for "Fare Average - TY"
+    fig.add_trace(go.Scatter(x=xorder, y=row_1_reversed.values, mode='lines+markers', name="Fare Average - TY"))
+
+    # Line for "Fare Average - LY"
+    fig.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Fare Average - LY"))
+
+    # Add forecast line for "Fare Average - TY"
+    fig.add_trace(go.Scatter(x=forecast['ds'], y=forecast['yhat'], mode='lines', name="Forecast - Fare Average - TY", line=dict(dash='dash')))
+
+    # Add forecast uncertainty interval
+    fig.add_trace(go.Scatter(
+        x=forecast['ds'], 
+        y=forecast['yhat_upper'], 
+        fill='tonexty', 
+        mode='none', 
+        name='Forecast Uncertainty Interval', 
+        fillcolor='rgba(0,100,80,0.2)'
+    ))
 
     # Add a horizontal line at the value of the selected row (e.g., index 0, column 3)
     horizontal_value = row.iloc[0, 3]  # Get the value from the specified cell
-    plt.axhline(y=horizontal_value, color='r', linestyle='--', label=f"Last Year Actual Avg Fare at {horizontal_value}")
+    fig.add_hline(y=horizontal_value, line=dict(color='red', dash='dash'), annotation_text=f"Last Year Actual Avg Fare at {horizontal_value}")
 
-    # Set the custom X-axis order
-    plt.xticks(xorder, rotation=45, ha='right')  # Apply custom order and rotate labels
+    # Update layout
+    fig.update_layout(
+        title=f"Behavior of Avg Fare - {FROM_CITY} to {TO_CITY}",
+        xaxis_title="Snap Dates",
+        yaxis_title="Average Fare (USD)",
+        legend_title="Legend",
+        template="plotly_dark",
+        xaxis=dict(tickvals=xorder),
+        hovermode="x unified"
+    )
 
-    # Add labels and title
-    plt.xlabel("Snap Dates")
-    plt.ylabel("Average Fare (USD)")
-    plt.title(f"Behavior of Avg Fare -  {FROM_CITY} to {TO_CITY}")
-    plt.grid(True, linestyle='--', alpha=0.6)
-    plt.legend()
-    plt.tight_layout()
+    # Display interactive graph
+    st.plotly_chart(fig)
 
-    # Display plot
-    st.pyplot(plt)
+    # Display data in an interactive table
+    st.subheader("Fare Data Table")
+    fare_data = pd.DataFrame({
+        'Date': xorder,
+        'Fare Average - TY': row_1_reversed.values,
+        'Fare Average - LY': row_2_reversed.values
+    })
+    
+    # Display the dataframe in an interactive table
+    st.dataframe(fare_data)
 
 # Streamlit dashboard code
 def main():
