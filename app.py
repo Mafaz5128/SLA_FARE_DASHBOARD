@@ -1,7 +1,6 @@
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
-from fbprophet import Prophet
 import numpy as np
 
 def avg_fare(FROM_CITY, TO_CITY, Month):
@@ -43,20 +42,6 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     row_1_reversed = row_1.iloc[::-1]  # Reverse the order of the row_1
     row_2_reversed = row_2.iloc[::-1]  # Reverse the order of the row_2
 
-    # Prepare data for forecasting using Prophet
-    df_prophet = pd.DataFrame({
-        'ds': pd.to_datetime(xorder), 
-        'y': row_1_reversed.values
-    })
-
-    # Initialize Prophet model
-    model = Prophet()
-    model.fit(df_prophet)
-    
-    # Make future predictions
-    future = model.make_future_dataframe(df_prophet, periods=5, freq='D')
-    forecast = model.predict(future)
-    
     # Plot using Plotly
     fig = go.Figure()
 
@@ -65,19 +50,6 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
 
     # Line for "Fare Average - LY"
     fig.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Fare Average - LY"))
-
-    # Add forecast line for "Fare Average - TY"
-    fig.add_trace(go.Scatter(x=forecast['ds'], y=forecast['yhat'], mode='lines', name="Forecast - Fare Average - TY", line=dict(dash='dash')))
-
-    # Add forecast uncertainty interval
-    fig.add_trace(go.Scatter(
-        x=forecast['ds'], 
-        y=forecast['yhat_upper'], 
-        fill='tonexty', 
-        mode='none', 
-        name='Forecast Uncertainty Interval', 
-        fillcolor='rgba(0,100,80,0.2)'
-    ))
 
     # Add a horizontal line at the value of the selected row (e.g., index 0, column 3)
     horizontal_value = row.iloc[0, 3]  # Get the value from the specified cell
