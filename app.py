@@ -36,17 +36,15 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     # Drop columns 22 to 40
     Month_Fare.drop(Month_Fare.columns[22:40], axis=1, inplace=True)
     
-    # Filter rows based on 'FROM_CITY' or 'TO_CITY'
-    if FROM_CITY:
-        row = Month_Fare[Month_Fare["FROM_CITY"] == FROM_CITY]
-    elif TO_CITY:
-        row = Month_Fare[Month_Fare["TO_CITY"] == TO_CITY]
+    # Filter rows based on both 'FROM_CITY' and 'TO_CITY'
+    if FROM_CITY and TO_CITY:
+        row = Month_Fare[(Month_Fare["FROM_CITY"] == FROM_CITY) & (Month_Fare["TO_CITY"] == TO_CITY)]
     else:
-        raise ValueError("Either 'FROM_CITY' or 'TO_CITY' must be specified.")
+        raise ValueError("Both 'FROM_CITY' and 'TO_CITY' must be specified.")
     
     # If no rows match the filter, raise an error
     if row.empty:
-        raise ValueError(f"No data found for the given city location. Please check the 'FROM_CITY' or 'TO_CITY'.")
+        raise ValueError(f"No data found for the given city pair ('{FROM_CITY}' to '{TO_CITY}'). Please check the cities.")
 
     # Select data for the first and second lines from the row
     xorder = ['03-Nov', '10-Nov', '17-Nov', '24-Nov', '01-Dec', '08-Dec', '15-Dec', '22-Dec', '29-Dec']
