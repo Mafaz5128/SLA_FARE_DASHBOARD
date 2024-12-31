@@ -48,7 +48,7 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     # Determine the indicator (up or down)
     indicator = ['⬆️' if diff > 0 else '⬇️' for diff in difference]
 
-    # Plot using Plotly
+    # Plot using Plotly (Fare Average graph)
     fig1 = go.Figure()
 
     # Line for "Fare Average - TY"
@@ -89,16 +89,11 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
         hovermode="x unified"
     )
 
-    # Create two columns for layout
-    col1, col2 = st.columns(2)
+    # Display the first graph (Fare Average graph)
+    st.plotly_chart(fig1)
 
-    # Display the fare graph in the first column
-    with col1:
-        st.plotly_chart(fig1)
-
-    # Display the difference graph in the second column
-    with col2:
-        st.plotly_chart(fig2)
+    # Display the second graph (Difference graph)
+    st.plotly_chart(fig2)
 
     # Display data in an interactive table
     st.subheader("Fare Data Table")
