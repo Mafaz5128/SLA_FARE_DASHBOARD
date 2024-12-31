@@ -3,23 +3,6 @@ import streamlit as st
 import plotly.graph_objects as go
 import numpy as np
 
-# Apply custom CSS to adjust the layout
-st.markdown(
-    """
-    <style>
-    .reportview-container {
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-    }
-    .block-container {
-        padding: 1rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 def avg_fare(FROM_CITY, TO_CITY, Month):
     # Load data
     df = pd.read_excel('AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', header=3)
@@ -62,71 +45,74 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     # Calculate the difference (LY - TY)
     difference = row_2_reversed.values - row_1_reversed.values
 
+    # Calculate the moving average (MA) for "Fare Average - TY"
+    ma_window = 3  # Moving average window size
+    ma_values = row_1_reversed.rolling(window=ma_window).mean().fillna(0)
+
     # Determine the indicator (up or down)
     indicator = ['⬆️' if diff > 0 else '⬇️' for diff in difference]
 
-    # Moving Average (3-point moving average)
-    ma_window = 3
-    row_1_ma = row_1_reversed.rolling(window=ma_window).mean()
-    row_2_ma = row_2_reversed.rolling(window=ma_window).mean()
+    # Create columns for side-by-side layout
+    col1, col2 = st.columns(2)
 
-    # Plot using Plotly for Fare Average graph
-    fig1 = go.Figure()
+    # Plot using Plotly (Fare Average graph) in the first column
+    with col1:
+        fig1 = go.Figure()
 
-    # Line for "Fare Average - TY"
-    fig1.add_trace(go.Scatter(x=xorder, y=row_1_reversed.values, mode='lines+markers', name="Fare Average - TY"))
+        # Line for "Fare Average - TY"
+        fig1.add_trace(go.Scatter(x=xorder, y=row_1_reversed.values, mode='lines+markers', name="Fare Average - TY"))
 
-    # Line for "Fare Average - LY"
-    fig1.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Fare Average - LY"))
+        # Line for "Fare Average - LY"
+        fig1.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Fare Average - LY"))
 
-    # Plotting the Moving Average (MA) for TY and LY
-    fig1.add_trace(go.Scatter(x=xorder, y=row_1_ma, mode='lines', name="MA - TY", line=dict(dash='dot', color='orange')))
-    fig1.add_trace(go.Scatter(x=xorder, y=row_2_ma, mode='lines', name="MA - LY", line=dict(dash='dot', color='yellow')))
+        # Add moving average line
+        fig1.add_trace(go.Scatter(x=xorder, y=ma_values, mode='lines', name="Moving Average (MA)", line=dict(dash='dot', color='orange')))
 
-    # Add a horizontal line at the value of the selected row (e.g., index 0, column 3)
-    horizontal_value = row.iloc[0, 3]  # Get the value from the specified cell
-    fig1.add_hline(y=horizontal_value, line=dict(color='red', dash='dash'), annotation_text=f"Last Year Actual Avg Fare at {horizontal_value}")
+        # Add a horizontal line at the value of the selected row (e.g., index 0, column 3)
+        horizontal_value = round(row.iloc[0, 3], 1)  # Round the value to one decimal place
+        fig1.add_hline(y=horizontal_value, line=dict(color='red', dash='dash'), annotation_text=f"Last Year Actual Avg Fare at {horizontal_value}")
 
-    # Update layout for the first figure (Fare averages graph)
-    fig1.update_layout(
-        title=f"Behavior of Avg Fare - {FROM_CITY} to {TO_CITY}",
-        xaxis_title="Snap Dates",
-        yaxis_title="Average Fare (USD)",
-        legend_title="Legend",
-        template="plotly_dark",
-        xaxis=dict(tickvals=xorder),
-        hovermode="x unified",
-        height=500,  # Height remains the same
-        width=None   # Let Streamlit handle the width automatically
-    )
+        # Update layout for the first figure (Fare averages graph)
+        fig1.update_layout(
+            title=f"Behavior of Avg Fare - {FROM_CITY} to {TO_CITY}",
+            xaxis_title="Snap Dates",
+            yaxis_title="Average Fare (USD)",
+            legend_title="Legend",
+            template="plotly_dark",
+            xaxis=dict(tickvals=xorder),
+            hovermode="x unified",
+            height=400,  # Height remains the same
+            width=1600   # Increased width to make the graph wider
+        )
 
-    # Display the first graph (Fare Average graph)
-    st.plotly_chart(fig1, use_container_width=True)
+        # Display the first graph (Fare Average graph)
+        st.plotly_chart(fig1, use_container_width=True)
 
-    # Plot the difference graph (LY - TY) separately
-    fig2 = go.Figure()
+    # Plot the difference graph in the second column
+    with col2:
+        fig2 = go.Figure()
 
-    # Add a line for the difference (LY - TY)
-    fig2.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (LY - TY)", line=dict(dash='dot')))
+        # Add a line for the difference (LY - TY)
+        fig2.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (LY - TY)", line=dict(dash='dot')))
 
-    # Add a horizontal line at y=0 to indicate the zero baseline
-    fig2.add_hline(y=0, line=dict(color='blue', dash='dash'), annotation_text="Zero Line", line_width=2)
+        # Add a zero line
+        fig2.add_hline(y=0, line=dict(color='black', dash='dash'), annotation_text="Zero Line")
 
-    # Update layout for the second figure (Difference graph)
-    fig2.update_layout(
-        title="Difference (LY - TY)",
-        xaxis_title="Snap Dates",
-        yaxis_title="Difference in Fare (USD)",
-        legend_title="Legend",
-        template="plotly_dark",
-        xaxis=dict(tickvals=xorder),
-        hovermode="x unified",
-        height=500,  # Height remains the same
-        width=None   # Let Streamlit handle the width automatically
-    )
+        # Update layout for the second figure (Difference graph)
+        fig2.update_layout(
+            title="Difference (LY - TY)",
+            xaxis_title="Snap Dates",
+            yaxis_title="Difference in Fare (USD)",
+            legend_title="Legend",
+            template="plotly_dark",
+            xaxis=dict(tickvals=xorder),
+            hovermode="x unified",
+            height=400,  # Height remains the same
+            width=1600   # Increased width to make the graph wider
+        )
 
-    # Display the second graph (Difference graph)
-    st.plotly_chart(fig2, use_container_width=True)
+        # Display the second graph (Difference graph)
+        st.plotly_chart(fig2, use_container_width=True)
 
     # Display data in an interactive table
     st.subheader("Fare Data Table")
