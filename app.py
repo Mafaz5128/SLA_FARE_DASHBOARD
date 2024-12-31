@@ -45,7 +45,7 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     row_2 = row.iloc[0, 5:22][::2]
     row_1_reversed = row_1.iloc[::-1]
     row_2_reversed = row_2.iloc[::-1]
-    difference = row_1_reversed.values - row_2_reversed.values
+    difference = row_2_reversed.values - row_1_reversed.values
 
     # Fare Average Graph
     fig1 = go.Figure()
