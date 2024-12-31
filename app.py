@@ -97,7 +97,7 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
             template="plotly_dark",
             xaxis=dict(tickvals=xorder),
             hovermode="x unified",
-            height=600,  # Height remains the same
+            height=800,  # Height remains the same
             width=1200   # Increased width to make the graph wider
         )
 
