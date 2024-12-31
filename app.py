@@ -1,27 +1,3 @@
-import pandas as pd
-import streamlit as st
-import plotly.graph_objects as go
-
-# Load data for dropdowns
-df = pd.read_excel('AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', header=3)
-
-# Unique values for dropdowns
-from_city_options = df['FROM_CITY'].unique()
-month_options = df['Month'].unique()
-
-# Streamlit widget for selecting 'From City'
-FROM_CITY = st.selectbox('Select From City:', from_city_options)
-
-# Filter 'TO_CITY' options based on 'FROM_CITY'
-to_city_options = df[df['FROM_CITY'] == FROM_CITY]['TO_CITY'].unique()
-
-# Streamlit widget for selecting 'To City'
-TO_CITY = st.selectbox('Select To City:', to_city_options)
-
-# Streamlit widget for selecting the month
-Month = st.selectbox('Select Month:', month_options)
-
-
 def avg_fare(FROM_CITY, TO_CITY, Month):
     month = df[df["Month"] == Month]
 
@@ -45,7 +21,7 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     row_2 = row.iloc[0, 5:22][::2]
     row_1_reversed = row_1.iloc[::-1]
     row_2_reversed = row_2.iloc[::-1]
-    difference = row_2_reversed.values - row_1_reversed.values
+    difference = row_1_reversed.values - row_2_reversed.values  # Update to TY - LY
 
     # Fare Average Graph
     fig1 = go.Figure()
@@ -68,10 +44,10 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
 
     # Fare Difference Graph
     fig2 = go.Figure()
-    fig2.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (LY - TY)", line=dict(dash='dot')))
+    fig2.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (TY - LY)", line=dict(dash='dot')))
     fig2.add_hline(y=0, line=dict(color='blue', dash='dash'), annotation_text="Zero Line")
     fig2.update_layout(
-        title="Difference (LY - TY)",
+        title="Difference (TY - LY)",
         xaxis_title="Snap Dates",
         yaxis_title="Difference in Fare (USD)",
         template="plotly_dark",
@@ -87,7 +63,7 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
         'Date': xorder,
         'Fare Average - TY': row_1_reversed.values,
         'Fare Average - LY': row_2_reversed.values,
-        'Difference (LY - TY)': difference,
+        'Difference (TY - LY)': difference,  # Update to TY - LY
         'Trend': arrows
     })
     st.subheader("Fare Data Table")
@@ -116,7 +92,7 @@ def pax(FROM_CITY, TO_CITY, Month):
     row_2 = row.iloc[0, 22:39][::2]
     row_1_reversed = row_1.iloc[::-1]
     row_2_reversed = row_2.iloc[::-1]
-    difference = row_2_reversed.values - row_1_reversed.values
+    difference = row_1_reversed.values - row_2_reversed.values  # Update to TY - LY
 
     # Pax Graph
     fig3 = go.Figure()
@@ -137,10 +113,10 @@ def pax(FROM_CITY, TO_CITY, Month):
 
     # Pax Difference Graph
     fig4 = go.Figure()
-    fig4.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (LY - TY)", line=dict(dash='dot')))
+    fig4.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (TY - LY)", line=dict(dash='dot')))
     fig4.add_hline(y=0, line=dict(color='blue', dash='dash'), annotation_text="Zero Line")
     fig4.update_layout(
-        title="Pax Difference (LY - TY)",
+        title="Pax Difference (TY - LY)",
         xaxis_title="Snap Dates",
         yaxis_title="Difference in Pax",
         template="plotly_dark",
@@ -156,14 +132,8 @@ def pax(FROM_CITY, TO_CITY, Month):
         'Date': xorder,
         'Pax - TY': row_1_reversed.values,
         'Pax - LY': row_2_reversed.values,
-        'Difference (LY - TY)': difference,
+        'Difference (TY - LY)': difference,  # Update to TY - LY
         'Trend': arrows
     })
     st.subheader("Pax Data Table")
     st.dataframe(pax_data)
-
-
-# Streamlit button to trigger both functions
-if st.button('Generate Fare and Pax Graphs'):
-    avg_fare(FROM_CITY, TO_CITY, Month)
-    pax(FROM_CITY, TO_CITY, Month)
