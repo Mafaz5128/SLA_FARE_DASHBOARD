@@ -98,7 +98,7 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
             xaxis=dict(tickvals=xorder),
             hovermode="x unified",
             height=400,  # Height remains the same
-            width=1600   # Increased width to make the graph wider
+            width=2000   # Increased width to make the graph wider
         )
 
         # Display the second graph (Difference graph)
