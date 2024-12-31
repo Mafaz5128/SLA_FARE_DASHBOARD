@@ -74,8 +74,8 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
             template="plotly_dark",
             xaxis=dict(tickvals=xorder),
             hovermode="x unified",
-            height=400,  # Height remains the same
-            width=1600   # Increased width to make the graph wider
+            height=500,  # Height remains the same
+            width=None   # Let Streamlit handle the width automatically
         )
 
         # Display the first graph (Fare Average graph)
@@ -97,8 +97,8 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
             template="plotly_dark",
             xaxis=dict(tickvals=xorder),
             hovermode="x unified",
-            height=400,  # Height remains the same
-            width=2000   # Increased width to make the graph wider
+            height=500,  # Height remains the same
+            width=None   # Let Streamlit handle the width automatically
         )
 
         # Display the second graph (Difference graph)
