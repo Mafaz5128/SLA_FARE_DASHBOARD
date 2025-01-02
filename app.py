@@ -322,6 +322,8 @@ if st.sidebar.button('Generate Insights'):
         # Generate Fare and Pax insights
         avg_fare(FROM_CITY, TO_CITY, Month)  # Generate Fare and Pax Graphs
         pax(FROM_CITY, TO_CITY, Month)       # Generate Pax Graphs and Table
+if st.sidebar.button('Generate Insights'):
+    try:
         pax_table_monthly(MonthM_LY)         # Generate Pax Table for Monthly LY
         generate_table_by_snap_date(year_type, snap_date_name, month)
     except Exception as e:
