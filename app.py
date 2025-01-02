@@ -17,10 +17,21 @@ st.markdown(
         .css-1d391kg .sidebar .sidebar-header {
             padding-top: 20px;
         }
+
+        /* Set the background color of the Streamlit app */
+        .main {
+            background-color: #001f3d !important;  /* Navy Blue */
+        }
+
+        /* Optional: Set background color for sidebar */
+        .css-1d391kg {
+            background-color: #001f3d !important;  /* Navy Blue */
+        }
     </style>
     """, 
     unsafe_allow_html=True
 )
+
 
 # Load data from the Excel file
 df = pd.read_excel('AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', header=3)
