@@ -47,10 +47,10 @@ FROM_CITY = st.sidebar.selectbox('Select From City:', from_city_options)
 TO_CITY = st.sidebar.selectbox('Select To City:', df[df['FROM_CITY'] == FROM_CITY]['TO_CITY'].unique())
 Month = st.sidebar.selectbox('Select Month:', month_options)
 st.sidebar.header('Region Wise Metrics')
-MonthM_LY = st.sidebar.selectbox('Select MonthM_LY:', monthm_ly_options)
-year_type = st.sidebar.selectbox("Select Year Type", ["ly", "ty"])
+MonthM_LY = st.sidebar.selectbox('Select Month - LY:', monthm_ly_options)
+year_type = st.sidebar.selectbox("Select Year Type", ["LY", "TY"])
 snap_date_name = st.sidebar.selectbox("Select Snap Date", ['29-Dec', '22-Dec', '15-Dec', '08-Dec', '01-Dec', '24-Nov', '17-Nov', '10-Nov', '03-Nov'])
-month = st.sidebar.selectbox("Select Month", df['Month'].unique())
+month = st.sidebar.selectbox("Select Month -TY", df['Month'].unique())
 
 # Function for Avg Fare Graphs and Table
 # Function for Avg Fare Graphs and Table with Bollinger Bands
@@ -261,7 +261,7 @@ def pax_table_monthly(MonthM_LY):
         final_table = merged_df
 
         # Display the final table below the Pax and Fare tables
-        st.subheader(f"Region-wise Metrics for MonthM_LY: {MonthM_LY}")
+        st.subheader(f"Region-wise Metrics for Last Year: {MonthM_LY}")
         st.dataframe(final_table)
 
 def generate_table_by_snap_date(year_type, snap_date_name, month):
@@ -277,16 +277,16 @@ def generate_table_by_snap_date(year_type, snap_date_name, month):
         return
 
     # Split fare and pax columns based on the year_type ('ly' or 'ty')
-    if year_type == 'ly':
+    if year_type == 'LY':
         ly_fare_columns = fare_columns[::2]  # Last year fares (every other column starting from 0)
         ly_pax_columns = pax_columns[::2]  # Last year pax (every other column starting from 0)
         columns = list(zip(snap_dates, ly_fare_columns, ly_pax_columns))  # Mapping to snap_dates for LY
-    elif year_type == 'ty':
+    elif year_type == 'TY':
         ty_fare_columns = fare_columns[1::2]  # This year fares (every other column starting from 1)
         ty_pax_columns = pax_columns[1::2]  # This year pax (every other column starting from 1)
         columns = list(zip(snap_dates, ty_fare_columns, ty_pax_columns))  # Mapping to snap_dates for TY
     else:
-        st.warning("Invalid year_type. It should be 'ly' or 'ty'.")
+        st.warning("Invalid year_type. It should be 'LY' or 'TY'.")
         return
 
     # Ensure the snap_date_name exists in the snap_dates
