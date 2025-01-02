@@ -55,6 +55,7 @@ month = st.sidebar.selectbox("Select Month -TY", df['Month'].unique())
 # Function for Avg Fare Graphs and Table
 # Function for Avg Fare Graphs and Table with Bollinger Bands
 def avg_fare(FROM_CITY, TO_CITY, Month):
+    # Assuming df is already loaded with the necessary data
     month = df[df["Month"] == Month]
 
     # Drop unnecessary columns
@@ -80,9 +81,6 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     difference = row_1_reversed.values - row_2_reversed.values
 
     # Add prediction using a linear trend
-    import numpy as np
-    from sklearn.linear_model import LinearRegression
-
     # Prepare the data for prediction
     dates = np.arange(len(xorder)).reshape(-1, 1)
     fare_avg_ty = row_1_reversed.values
@@ -110,14 +108,68 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
 
     # Plot the extended graph
     fig1 = go.Figure()
-    fig1.add_trace(go.Scatter(x=extended_xorder, y=extended_fare_avg_ty, mode='lines+markers', name="Fare Avg - TY (With Prediction)"))
-    fig1.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Fare Avg - LY"))
-    fig1.add_trace(go.Scatter(x=extended_xorder, y=extended_rolling_mean, mode='lines', name="MA - TY", line=dict(dash='dot', color='orange')))
-    fig1.add_trace(go.Scatter(x=extended_xorder, y=extended_upper_band, mode='lines', name="Upper Bollinger Band", line=dict(color='green', dash='dash')))
-    fig1.add_trace(go.Scatter(x=extended_xorder, y=extended_lower_band, mode='lines', name="Lower Bollinger Band", line=dict(color='red', dash='dash')))
 
+    # Add the actual data for Fare Avg - TY
+    fig1.add_trace(go.Scatter(
+        x=xorder,
+        y=fare_avg_ty,
+        mode='lines+markers',
+        name="Fare Avg - TY (Actual)",
+        line=dict(color='blue')
+    ))
+
+    # Add the predicted data for Fare Avg - TY
+    fig1.add_trace(go.Scatter(
+        x=future_snap_dates,
+        y=predictions,
+        mode='lines+markers',
+        name="Fare Avg - TY (Prediction)",
+        line=dict(color='purple', dash='dot')  # Different color and style for predictions
+    ))
+
+    # Add the Fare Avg - LY data
+    fig1.add_trace(go.Scatter(
+        x=xorder,
+        y=row_2_reversed.values,
+        mode='lines+markers',
+        name="Fare Avg - LY",
+        line=dict(color='orange')
+    ))
+
+    # Add moving average (MA - TY)
+    fig1.add_trace(go.Scatter(
+        x=extended_xorder,
+        y=extended_rolling_mean,
+        mode='lines',
+        name="MA - TY",
+        line=dict(dash='dot', color='gray')
+    ))
+
+    # Add Bollinger Bands
+    fig1.add_trace(go.Scatter(
+        x=extended_xorder,
+        y=extended_upper_band,
+        mode='lines',
+        name="Upper Bollinger Band",
+        line=dict(color='green', dash='dash')
+    ))
+    fig1.add_trace(go.Scatter(
+        x=extended_xorder,
+        y=extended_lower_band,
+        mode='lines',
+        name="Lower Bollinger Band",
+        line=dict(color='red', dash='dash')
+    ))
+
+    # Add horizontal line for last year's average fare
     horizontal_value = round(row.iloc[0, 3], 2)
-    fig1.add_hline(y=horizontal_value, line=dict(color='red', dash='dash'), annotation_text=f"Last Year Avg Fare: {horizontal_value}")
+    fig1.add_hline(
+        y=horizontal_value,
+        line=dict(color='red', dash='dash'),
+        annotation_text=f"Last Year Avg Fare: {horizontal_value}"
+    )
+
+    # Update layout
     fig1.update_layout(
         title=f"Behavior of Avg Fare - {FROM_CITY} to {TO_CITY}",
         xaxis_title="Snap Dates",
