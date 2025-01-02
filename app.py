@@ -224,7 +224,7 @@ def pax(FROM_CITY, TO_CITY, Month):
         st.dataframe(pax_data)
 
 # Function for Pax Table Monthly LY
-if st.sidebar.button('Generate Insights-1'):
+if st.sidebar.button('Generate-Average Fare Pax Trends'):
     try:
         # Print selected filter values for debugging
         st.write(f"FROM_CITY: {FROM_CITY}, TO_CITY: {TO_CITY}, Month: {Month}")
@@ -325,7 +325,7 @@ def generate_table_by_snap_date(year_type, snap_date_name, month):
     st.dataframe(result_table)
 
 
-if st.sidebar.button('Generate Insights-2'):
+if st.sidebar.button('Generate : Region Wise Metrics'):
     try:
         # Generate Pax Table for Monthly LY and Snap Date insights
         pax_table_monthly(MonthM_LY)         # Generate Pax Table for Monthly LY
