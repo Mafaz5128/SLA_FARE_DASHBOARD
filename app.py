@@ -36,7 +36,7 @@ st.markdown(
 
 # Load data from the Excel file
 df = pd.read_excel('AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', header=3)
-
+df.dropna()
 # Dropdown options
 from_city_options = df['FROM_CITY'].unique()
 month_options = df['Month'].unique()
