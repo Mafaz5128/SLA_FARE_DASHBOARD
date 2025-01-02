@@ -2,24 +2,20 @@ import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
 
-# Load data for dropdowns
+# Load data
 df = pd.read_excel('AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', header=3)
 
 # Unique values for dropdowns
 from_city_options = df['FROM_CITY'].unique()
 month_options = df['Month'].unique()
+month_mly_options = df['MonthM_LY'].unique()  # For filtering Pax Data Table
 
-# Streamlit widget for selecting 'From City'
+# Streamlit widgets
 FROM_CITY = st.selectbox('Select From City:', from_city_options)
-
-# Filter 'TO_CITY' options based on 'FROM_CITY'
 to_city_options = df[df['FROM_CITY'] == FROM_CITY]['TO_CITY'].unique()
-
-# Streamlit widget for selecting 'To City'
 TO_CITY = st.selectbox('Select To City:', to_city_options)
-
-# Streamlit widget for selecting the month
 Month = st.selectbox('Select Month:', month_options)
+MonthM_LY = st.selectbox('Select MonthM_LY for Pax Table:', month_mly_options)
 
 
 def avg_fare(FROM_CITY, TO_CITY, Month):
@@ -124,7 +120,7 @@ def pax(FROM_CITY, TO_CITY, Month):
     fig3.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Pax - LY"))
     fig3.add_trace(go.Scatter(x=xorder, y=row_1_reversed.rolling(window=3).mean(), mode='lines', name="MA - TY", line=dict(dash='dot', color='orange')))
     fig3.add_trace(go.Scatter(x=xorder, y=row_2_reversed.rolling(window=3).mean(), mode='lines', name="MA - LY", line=dict(dash='dot', color='yellow')))
-    horizontal_value = round(row.iloc[0,4], 2)
+    horizontal_value = round(row.iloc[0, 4], 2)
     fig3.add_hline(y=horizontal_value, line=dict(color='red', dash='dash'), annotation_text=f"Last Year Pax Count: {horizontal_value}")
 
     fig3.update_layout(
@@ -166,7 +162,21 @@ def pax(FROM_CITY, TO_CITY, Month):
     st.dataframe(pax_data)
 
 
-# Streamlit button to trigger both functions
+def pax_table_monthly(FROM_CITY, TO_CITY, MonthM_LY):
+    filtered_df = df[df["MonthM_LY"] == MonthM_LY]
+    table_data = filtered_df[(filtered_df["FROM_CITY"] == FROM_CITY) & (filtered_df["TO_CITY"] == TO_CITY)]
+    
+    if table_data.empty:
+        st.warning(f"No data found for MonthM_LY: {MonthM_LY} for '{FROM_CITY}' to '{TO_CITY}'.")
+    else:
+        st.subheader(f"Pax Data Table for MonthM_LY: {MonthM_LY}")
+        st.dataframe(table_data)
+
+
+# Streamlit buttons to trigger functions
 if st.button('Generate Fare and Pax Graphs'):
     avg_fare(FROM_CITY, TO_CITY, Month)
     pax(FROM_CITY, TO_CITY, Month)
+
+if st.button('Generate Pax Table for MonthM_LY'):
+    pax_table_monthly(FROM_CITY, TO_CITY, MonthM_LY)
