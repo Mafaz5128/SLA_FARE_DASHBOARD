@@ -224,7 +224,7 @@ def pax(FROM_CITY, TO_CITY, Month):
         st.dataframe(pax_data)
 
 # Function for Pax Table Monthly LY
-if st.sidebar.button('Generate: Average Fare Pax Trends'):
+if st.sidebar.button('Generate: Average Fare, and Pax Trends'):
     try:
         # Print selected filter values for debugging
         st.write(f"FROM_CITY: {FROM_CITY}, TO_CITY: {TO_CITY}, Month: {Month}")
