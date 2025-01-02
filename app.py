@@ -37,6 +37,13 @@ TO_CITY = st.sidebar.selectbox('Select To City:', df[df['FROM_CITY'] == FROM_CIT
 Month = st.sidebar.selectbox('Select Month:', month_options)
 MonthM_LY = st.sidebar.selectbox('Select MonthM_LY:', monthm_ly_options)
 
+# Add the "Generate Insights" button inside the sidebar after filters
+if st.sidebar.button('Generate Insights'):
+    # Trigger functions to generate insights
+    avg_fare(FROM_CITY, TO_CITY, Month)  # Generate Fare and Pax Graphs
+    pax(FROM_CITY, TO_CITY, Month)       # Generate Pax Graphs and Table
+    pax_table_monthly(MonthM_LY)         # Generate Pax Table for selected MonthM_LY
+
 # Function for Avg Fare Graphs and Table
 def avg_fare(FROM_CITY, TO_CITY, Month):
     month = df[df["Month"] == Month]
@@ -190,9 +197,3 @@ def pax(FROM_CITY, TO_CITY, Month):
     })
     st.subheader("Pax Data Table")
     st.dataframe(pax_data)
-
-# Button to trigger all functions in one click
-if st.button('Generate Insights'):
-    avg_fare(FROM_CITY, TO_CITY, Month)  # Generate Fare and Pax Graphs
-    pax(FROM_CITY, TO_CITY, Month)       # Generate Pax Graphs and Table
-    pax_table_monthly(MonthM_LY)         # Generate Pax Table for selected MonthM_LY
