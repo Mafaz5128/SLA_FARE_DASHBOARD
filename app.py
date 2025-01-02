@@ -2,23 +2,27 @@ import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
 
-# Load data
+# Load data for dropdowns
 df = pd.read_excel('AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', header=3)
 
 # Unique values for dropdowns
 from_city_options = df['FROM_CITY'].unique()
 month_options = df['Month'].unique()
-month_mly_options = df['MonthM_LY'].unique()  # For filtering Pax Data Table
 
-# Streamlit widgets for filtering
+# Streamlit widget for selecting 'From City'
 FROM_CITY = st.selectbox('Select From City:', from_city_options)
-TO_CITY = st.selectbox('Select To City:', df[df['FROM_CITY'] == FROM_CITY]['TO_CITY'].unique())
+
+# Filter 'TO_CITY' options based on 'FROM_CITY'
+to_city_options = df[df['FROM_CITY'] == FROM_CITY]['TO_CITY'].unique()
+
+# Streamlit widget for selecting 'To City'
+TO_CITY = st.selectbox('Select To City:', to_city_options)
+
+# Streamlit widget for selecting the month
 Month = st.selectbox('Select Month:', month_options)
-MonthM_LY = st.selectbox('Select MonthM_LY for Pax Table:', month_mly_options)
 
 
 def avg_fare(FROM_CITY, TO_CITY, Month):
-    # Filter data
     month = df[df["Month"] == Month]
 
     # Drop unnecessary columns
@@ -90,13 +94,13 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     st.dataframe(fare_data)
 
 
-def pax(FROM_CITY, TO_CITY, MonthM_LY):
-    filtered_df = df[df["MonthM_LY"] == MonthM_LY]
+def pax(FROM_CITY, TO_CITY, Month):
+    month = df[df["Month"] == Month]
 
     # Drop unnecessary columns
-    Month_Fare = filtered_df.drop(
+    Month_Fare = month.drop(
         [
-            'SEG KEY', 'SEG KEY LY', 'Year', 'Month', 'Revenue_USD ',
+            'SEG KEY', 'SEG KEY LY', 'MonthM_LY', 'Year', 'Month', 'Revenue_USD ',
             "29Dec'24", "29Dec'23", "29Dec'24.", "29Dec'23.", 'Revenue_USD LY'
         ],
         axis=1
@@ -120,8 +124,9 @@ def pax(FROM_CITY, TO_CITY, MonthM_LY):
     fig3.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Pax - LY"))
     fig3.add_trace(go.Scatter(x=xorder, y=row_1_reversed.rolling(window=3).mean(), mode='lines', name="MA - TY", line=dict(dash='dot', color='orange')))
     fig3.add_trace(go.Scatter(x=xorder, y=row_2_reversed.rolling(window=3).mean(), mode='lines', name="MA - LY", line=dict(dash='dot', color='yellow')))
-    horizontal_value = round(row.iloc[0, 4], 2)
+    horizontal_value = round(row.iloc[0,4], 2)
     fig3.add_hline(y=horizontal_value, line=dict(color='red', dash='dash'), annotation_text=f"Last Year Pax Count: {horizontal_value}")
+
     fig3.update_layout(
         title=f"Behavior of Pax - {FROM_CITY} to {TO_CITY}",
         xaxis_title="Snap Dates",
@@ -164,4 +169,4 @@ def pax(FROM_CITY, TO_CITY, MonthM_LY):
 # Streamlit button to trigger both functions
 if st.button('Generate Fare and Pax Graphs'):
     avg_fare(FROM_CITY, TO_CITY, Month)
-    pax(FROM_CITY, TO_CITY, MonthM_LY)
+    pax(FROM_CITY, TO_CITY, Month)
