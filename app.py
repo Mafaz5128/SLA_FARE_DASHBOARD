@@ -10,11 +10,12 @@ from_city_options = df['FROM_CITY'].unique()
 month_options = df['Month'].unique()
 monthm_ly_options = df['MonthM_LY'].unique()
 
-# Streamlit widgets for user input
-FROM_CITY = st.selectbox('Select From City:', from_city_options)
-TO_CITY = st.selectbox('Select To City:', df[df['FROM_CITY'] == FROM_CITY]['TO_CITY'].unique())
-Month = st.selectbox('Select Month:', month_options)
-MonthM_LY = st.selectbox('Select MonthM_LY:', monthm_ly_options)
+# Sidebar for filters
+st.sidebar.header('Filter Options')
+FROM_CITY = st.sidebar.selectbox('Select From City:', from_city_options)
+TO_CITY = st.sidebar.selectbox('Select To City:', df[df['FROM_CITY'] == FROM_CITY]['TO_CITY'].unique())
+Month = st.sidebar.selectbox('Select Month:', month_options)
+MonthM_LY = st.sidebar.selectbox('Select MonthM_LY:', monthm_ly_options)
 
 # Function for Avg Fare Graphs and Table
 def avg_fare(FROM_CITY, TO_CITY, Month):
@@ -59,7 +60,6 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
         hovermode="x unified",
         height=500
     )
-    st.plotly_chart(fig1, use_container_width=True)
 
     # Fare Difference Graph
     fig2 = go.Figure()
@@ -74,7 +74,13 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
         hovermode="x unified",
         height=500
     )
-    st.plotly_chart(fig2, use_container_width=True)
+
+    # Display the charts side by side
+    col1, col2 = st.columns(2)
+    with col1:
+        st.plotly_chart(fig1, use_container_width=True)
+    with col2:
+        st.plotly_chart(fig2, use_container_width=True)
 
     # Fare Data Table
     arrows = ["↑" if diff > 0 else "↓" if diff < 0 else "=" for diff in difference]
@@ -122,7 +128,6 @@ def pax(FROM_CITY, TO_CITY, Month):
     fig3.add_trace(go.Scatter(x=xorder, y=row_2_reversed.rolling(window=3).mean(), mode='lines', name="MA - LY", line=dict(dash='dot', color='yellow')))
     horizontal_value = round(row.iloc[0, 4], 2)
     fig3.add_hline(y=horizontal_value, line=dict(color='red', dash='dash'), annotation_text=f"Last Year Pax Count: {horizontal_value}")
-
     fig3.update_layout(
         title=f"Behavior of Pax - {FROM_CITY} to {TO_CITY}",
         xaxis_title="Snap Dates",
@@ -132,7 +137,6 @@ def pax(FROM_CITY, TO_CITY, Month):
         hovermode="x unified",
         height=500
     )
-    st.plotly_chart(fig3, use_container_width=True)
 
     # Pax Difference Graph
     fig4 = go.Figure()
@@ -147,7 +151,13 @@ def pax(FROM_CITY, TO_CITY, Month):
         hovermode="x unified",
         height=500
     )
-    st.plotly_chart(fig4, use_container_width=True)
+
+    # Display the charts side by side
+    col1, col2 = st.columns(2)
+    with col1:
+        st.plotly_chart(fig3, use_container_width=True)
+    with col2:
+        st.plotly_chart(fig4, use_container_width=True)
 
     # Pax Data Table
     arrows = ["↑" if diff > 0 else "↓" if diff < 0 else "=" for diff in difference]
@@ -189,7 +199,6 @@ def pax_table_monthly(MonthM_LY):
         # Display the final table
         st.subheader(f"Region-wise Metrics for MonthM_LY: {MonthM_LY}")
         st.dataframe(final_table)
-
 
 # Button to trigger both functions
 if st.button('Generate Fare and Pax Graphs'):
