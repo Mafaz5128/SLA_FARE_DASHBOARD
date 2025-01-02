@@ -2,6 +2,26 @@ import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
 
+# Set page configuration to optimize layout
+st.set_page_config(layout="wide")
+
+# Custom CSS to reduce sidebar width
+st.markdown(
+    """
+    <style>
+        /* Adjust the sidebar width */
+        .css-1d391kg {width: 20% !important;}
+        .css-1d391kg .sidebar-content {
+            width: 100% !important;
+        }
+        .css-1d391kg .sidebar .sidebar-header {
+            padding-top: 20px;
+        }
+    </style>
+    """, 
+    unsafe_allow_html=True
+)
+
 # Load data from the Excel file
 df = pd.read_excel('AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', header=3)
 
@@ -143,7 +163,7 @@ def pax(FROM_CITY, TO_CITY, Month):
     fig4.add_trace(go.Scatter(x=xorder, y=difference, mode='lines+markers', name="Difference (TY - LY)", line=dict(dash='dot')))
     fig4.add_hline(y=0, line=dict(color='blue', dash='dash'), annotation_text="Zero Line")
     fig4.update_layout(
-        title="Pax Difference (LY - TY)",
+        title="Difference (TY - LY)",
         xaxis_title="Snap Dates",
         yaxis_title="Difference in Pax",
         template="plotly_dark",
