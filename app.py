@@ -191,6 +191,24 @@ def pax(FROM_CITY, TO_CITY, Month):
     st.subheader("Pax Data Table")
     st.dataframe(pax_data)
 
+# Function for Pax Table Monthly LY
+def pax_table_monthly(MonthM_LY):
+    month = df[df["MonthM_LY"] == MonthM_LY]
+
+    # Drop unnecessary columns
+    Month_Fare = month.drop(
+        [
+            'SEG KEY', 'SEG KEY LY', 'MonthM_LY', 'Year', 'Month', 'Revenue_USD ',
+            "29Dec'24", "29Dec'23", "29Dec'24.", "29Dec'23.", 'Revenue_USD LY'
+        ],
+        axis=1
+    )
+
+    # Create table
+    pax_monthly = Month_Fare[['FROM_CITY', 'TO_CITY', 'PAX_TY', 'PAX LY', 'MonthM_LY']]
+    st.subheader("Monthly Pax Data for LY")
+    st.dataframe(pax_monthly)
+
 # Handle button click to generate insights
 if st.sidebar.button('Generate Insights'):
     try:
@@ -200,5 +218,6 @@ if st.sidebar.button('Generate Insights'):
         # Generate Fare and Pax insights
         avg_fare(FROM_CITY, TO_CITY, Month)  # Generate Fare and Pax Graphs
         pax(FROM_CITY, TO_CITY, Month)       # Generate Pax Graphs and Table
+        pax_table_monthly(MonthM_LY)         # Generate Pax Table for Monthly LY
     except Exception as e:
         st.error(f"Error while generating insights: {e}")
