@@ -111,8 +111,12 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
         'Difference (LY - TY)': difference,
         'Trend': arrows
     })
-    st.subheader("Fare Data Table")
-    st.dataframe(fare_data)
+
+    # Display the Fare Data Table side by side with Pax Data Table
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("Fare Data Table")
+        st.dataframe(fare_data)
 
 # Function for Pax Graphs and Table
 def pax(FROM_CITY, TO_CITY, Month):
@@ -188,8 +192,12 @@ def pax(FROM_CITY, TO_CITY, Month):
         'Difference (LY - TY)': difference,
         'Trend': arrows
     })
-    st.subheader("Pax Data Table")
-    st.dataframe(pax_data)
+
+    # Display the Pax Data Table side by side with Fare Data Table
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("Pax Data Table")
+        st.dataframe(pax_data)
 
 # Function for Pax Table Monthly LY
 def pax_table_monthly(MonthM_LY):
@@ -216,7 +224,7 @@ def pax_table_monthly(MonthM_LY):
         # Reshape the data to keep `Region_AI` as rows and metrics as columns
         final_table = merged_df
 
-        # Display the final table
+        # Display the final table below the Pax and Fare tables
         st.subheader(f"Region-wise Metrics for MonthM_LY: {MonthM_LY}")
         st.dataframe(final_table)
 
