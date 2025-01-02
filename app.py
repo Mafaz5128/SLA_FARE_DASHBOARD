@@ -273,8 +273,8 @@ def generate_table_by_snap_date(year_type, snap_date_name):
         raise ValueError(f"Invalid snap_date_name. Please provide a valid column name from the available fare or pax columns.")
 
     # Select the appropriate fare and pax columns based on the snap_date_name
-    selected_fare_column = snap_date_name  # Use the column name for fare
-    selected_pax_column = snap_date_name  # Use the column name for pax
+    selected_fare_column = "snap_date_name"  # Use the column name for fare
+    selected_pax_column = "snap_date_name"  # Use the column name for pax
 
     # Group by 'Region_AI' and aggregate the data for the selected columns
     sum_pax = filtered_df.groupby(['Region_AI'])[selected_pax_column].sum().reset_index(name='SumPax')
