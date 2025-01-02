@@ -29,7 +29,7 @@ df = pd.read_excel('AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', head
 from_city_options = df['FROM_CITY'].unique()
 month_options = df['Month'].unique()
 monthm_ly_options = df['MonthM_LY'].unique()
-available_snap_dates = df.columns[18:34]
+available_snap_dates = ['29-Dec', '22-Dec', '15-Dec', '08-Dec', '01-Dec', '24-Nov', '17-Nov', '10-Nov', '03-Nov']
 
 # Sidebar for filters
 st.sidebar.header('Filter Options')
@@ -247,6 +247,11 @@ import pandas as pd
 
 # Assuming you have the DataFrame 'df' and filtered_df already available
 
+import streamlit as st
+import pandas as pd
+
+# Assuming you have the DataFrame 'df' and filtered_df already available
+
 def generate_table_by_snap_date(year_type, snap_date_name):
     # Assuming fare data is between columns 18 to 34 and pax data is from column 35 onwards
     fare_columns = df.columns[18:34]  # Fare columns from 18 to 34
@@ -257,6 +262,11 @@ def generate_table_by_snap_date(year_type, snap_date_name):
     ty_fare_columns = fare_columns[1::2]  # This year fares (every other column starting from 1)
     ly_pax_columns = pax_columns[::2]  # Last year pax (every other column starting from 0)
     ty_pax_columns = pax_columns[1::2]  # This year pax (every other column starting from 1)
+
+    snap_dates = ['29-Dec', '22-Dec', '15-Dec', '08-Dec', '01-Dec', '24-Nov', '17-Nov', '10-Nov', '03-Nov']
+
+    # Sort snap dates based on the provided snap_date_name
+    snap_date_index = snap_dates.index(snap_date_name)
 
     # Select the columns based on the year_type ('ly' or 'ty')
     if year_type == 'ly':
@@ -273,8 +283,8 @@ def generate_table_by_snap_date(year_type, snap_date_name):
         raise ValueError(f"Invalid snap_date_name. Please provide a valid column name from the available fare or pax columns.")
 
     # Select the appropriate fare and pax columns based on the snap_date_name
-    selected_fare_column = "snap_date_name"  # Use the column name for fare
-    selected_pax_column = "snap_date_name"  # Use the column name for pax
+    selected_fare_column = fare_columns[snap_date_index]
+    selected_pax_column = pax_columns[snap_date_index]
 
     # Group by 'Region_AI' and aggregate the data for the selected columns
     sum_pax = filtered_df.groupby(['Region_AI'])[selected_pax_column].sum().reset_index(name='SumPax')
@@ -282,9 +292,11 @@ def generate_table_by_snap_date(year_type, snap_date_name):
 
     # Merge the aggregated data on 'Region_AI'
     result_table = sum_pax.merge(avg_fare, on='Region_AI', how='left')
-        # Display the final table below the Pax and Fare tables
-    st.subheader(f"Region-wise Metrics for Snap Date: {MonthM_LY}")
+
+    # Display the final table below the Pax and Fare tables
+    st.subheader(f"Region-wise Metrics for Snap Date: {snap_date_name}")
     st.dataframe(result_table)
+
 
 
 # Handle button click to generate insights
