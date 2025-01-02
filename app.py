@@ -314,6 +314,7 @@ def generate_table_by_snap_date(year_type, snap_date_name, month):
 
 
 # Handle button click to generate insights
+# Separate "Generate Insights" buttons for the two sections
 if st.sidebar.button('Generate Insights-1'):
     try:
         # Print selected filter values for debugging
@@ -322,9 +323,16 @@ if st.sidebar.button('Generate Insights-1'):
         # Generate Fare and Pax insights
         avg_fare(FROM_CITY, TO_CITY, Month)  # Generate Fare and Pax Graphs
         pax(FROM_CITY, TO_CITY, Month)       # Generate Pax Graphs and Table
-if st.sidebar.button('Generate Insights-2'):
-    try:
-        pax_table_monthly(MonthM_LY)         # Generate Pax Table for Monthly LY
-        generate_table_by_snap_date(year_type, snap_date_name, month)
+        
     except Exception as e:
         st.error(f"Error while generating insights: {e}")
+
+if st.sidebar.button('Generate Insights-2'):
+    try:
+        # Generate Pax Table for Monthly LY and Snap Date insights
+        pax_table_monthly(MonthM_LY)         # Generate Pax Table for Monthly LY
+        generate_table_by_snap_date(year_type, snap_date_name, month)  # Generate table by snap date
+        
+    except Exception as e:
+        st.error(f"Error while generating insights: {e}")
+
