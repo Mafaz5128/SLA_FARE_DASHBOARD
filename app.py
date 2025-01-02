@@ -77,6 +77,7 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     row_2 = row.iloc[0, 5:22][::2]
     row_1_reversed = row_1.iloc[::-1]
     row_2_reversed = row_2.iloc[::-1]
+    difference = row_1_reversed.values - row_2_reversed.values
 
     # Add prediction using a linear trend
     import numpy as np
@@ -101,32 +102,22 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     # Combine actual and predicted data
     extended_fare_avg_ty = np.concatenate([fare_avg_ty, predictions])
 
+    # Calculate Bollinger Bands for extended data
+    extended_rolling_mean = pd.Series(extended_fare_avg_ty).rolling(window=3).mean()
+    extended_rolling_std = pd.Series(extended_fare_avg_ty).rolling(window=3).std()
+    extended_upper_band = extended_rolling_mean + (2 * extended_rolling_std)
+    extended_lower_band = extended_rolling_mean - (2 * extended_rolling_std)
+
     # Plot the extended graph
     fig1 = go.Figure()
-
-    # Plot the actual portion of the line
-    fig1.add_trace(go.Scatter(
-        x=xorder, y=fare_avg_ty, mode='lines+markers', name="Fare Avg - TY (Actual)",
-        line=dict(color='white')  # Actual line in white
-    ))
-
-    # Plot the predicted portion of the line
-    fig1.add_trace(go.Scatter(
-        x=future_snap_dates, y=predictions, mode='lines+markers', name="Fare Avg - TY (Prediction)",
-        line=dict(color='blue')  # Prediction line in blue
-    ))
-
-    # Add other lines
+    fig1.add_trace(go.Scatter(x=extended_xorder, y=extended_fare_avg_ty, mode='lines+markers', name="Fare Avg - TY (With Prediction)"))
     fig1.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Fare Avg - LY"))
-    
-    # Additional horizontal line for comparison
+    fig1.add_trace(go.Scatter(x=extended_xorder, y=extended_rolling_mean, mode='lines', name="MA - TY", line=dict(dash='dot', color='orange')))
+    fig1.add_trace(go.Scatter(x=extended_xorder, y=extended_upper_band, mode='lines', name="Upper Bollinger Band", line=dict(color='green', dash='dash')))
+    fig1.add_trace(go.Scatter(x=extended_xorder, y=extended_lower_band, mode='lines', name="Lower Bollinger Band", line=dict(color='red', dash='dash')))
+
     horizontal_value = round(row.iloc[0, 3], 2)
-    fig1.add_hline(
-        y=horizontal_value,
-        line=dict(color='red', dash='dash'),
-        annotation_text=f"Last Year Avg Fare: {horizontal_value}"
-    )
-    
+    fig1.add_hline(y=horizontal_value, line=dict(color='red', dash='dash'), annotation_text=f"Last Year Avg Fare: {horizontal_value}")
     fig1.update_layout(
         title=f"Behavior of Avg Fare - {FROM_CITY} to {TO_CITY}",
         xaxis_title="Snap Dates",
@@ -139,6 +130,7 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
 
     # Display the chart
     st.plotly_chart(fig1, use_container_width=True)
+
 
 
     # Fare Difference Graph
