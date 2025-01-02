@@ -242,6 +242,51 @@ def pax_table_monthly(MonthM_LY):
 
 # Assuming you have the DataFrame 'df' and filtered_df already available
 
+import streamlit as st
+import pandas as pd
+
+# Assuming you have the DataFrame 'df' and filtered_df already available
+
+def generate_table_by_snap_date(year_type, snap_date_name):
+    # Assuming fare data is between columns 18 to 34 and pax data is from column 35 onwards
+    fare_columns = df.columns[18:34]  # Fare columns from 18 to 34
+    pax_columns = df.columns[35:]  # Pax columns starting from 35
+
+    # Splitting the columns for last year (ly) and this year (ty)
+    ly_fare_columns = fare_columns[::2]  # Last year fares (every other column starting from 0)
+    ty_fare_columns = fare_columns[1::2]  # This year fares (every other column starting from 1)
+    ly_pax_columns = pax_columns[::2]  # Last year pax (every other column starting from 0)
+    ty_pax_columns = pax_columns[1::2]  # This year pax (every other column starting from 1)
+
+    # Select the columns based on the year_type ('ly' or 'ty')
+    if year_type == 'ly':
+        fare_columns = ly_fare_columns
+        pax_columns = ly_pax_columns
+    elif year_type == 'ty':
+        fare_columns = ty_fare_columns
+        pax_columns = ty_pax_columns
+    else:
+        raise ValueError("Invalid year_type. It should be 'ly' or 'ty'.")
+
+    # Ensure the snap_date_name exists in the fare and pax columns
+    if snap_date_name not in fare_columns or snap_date_name not in pax_columns:
+        raise ValueError(f"Invalid snap_date_name. Please provide a valid column name from the available fare or pax columns.")
+
+    # Select the appropriate fare and pax columns based on the snap_date_name
+    selected_fare_column = snap_date_name  # Use the column name for fare
+    selected_pax_column = snap_date_name  # Use the column name for pax
+
+    # Group by 'Region_AI' and aggregate the data for the selected columns
+    sum_pax = filtered_df.groupby(['Region_AI'])[selected_pax_column].sum().reset_index(name='SumPax')
+    avg_fare = filtered_df.groupby(['Region_AI'])[selected_fare_column].mean().reset_index(name='AvgFare')
+
+    # Merge the aggregated data on 'Region_AI'
+    result_table = sum_pax.merge(avg_fare, on='Region_AI', how='left')
+        # Display the final table below the Pax and Fare tables
+    st.subheader(f"Region-wise Metrics for Snap Date: {MonthM_LY}")
+    st.dataframe(result_table)
+
+
 # Handle button click to generate insights
 if st.sidebar.button('Generate Insights'):
     try:
@@ -252,5 +297,6 @@ if st.sidebar.button('Generate Insights'):
         avg_fare(FROM_CITY, TO_CITY, Month)  # Generate Fare and Pax Graphs
         pax(FROM_CITY, TO_CITY, Month)       # Generate Pax Graphs and Table
         pax_table_monthly(MonthM_LY)         # Generate Pax Table for Monthly LY
+        generate_table_by_snap_date(year_type, snap_date_name)
     except Exception as e:
         st.error(f"Error while generating insights: {e}")
