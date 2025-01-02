@@ -129,7 +129,7 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     )
 
     # Display the chart
-    st.plotly_chart(fig1, use_container_width=True, key="fare_avg_ty_chart")
+    #st.plotly_chart(fig1, use_container_width=True, key="fare_avg_ty_chart")
 
 
 
