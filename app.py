@@ -191,40 +191,8 @@ def pax(FROM_CITY, TO_CITY, Month):
     st.subheader("Pax Data Table")
     st.dataframe(pax_data)
 
-# Function for Monthly Pax Table
-def pax_table_monthly(MonthM_LY):
-    # Filter the dataframe by MonthM_LY
-    filtered_df = df[df['MonthM_LY'] == MonthM_LY]
-    
-    if filtered_df.empty:
-        st.warning(f"No data found for the selected MonthM_LY: {MonthM_LY}.")
-    else:
-        # Group and calculate metrics for the filtered data
-        sum_pax = filtered_df.groupby(['Region_AI'])['PAX LY'].sum().reset_index(name='Pax')
-        sum_revenue = (
-            filtered_df.groupby(['Region_AI'])['Revenue_USD LY']
-            .sum()
-            .round(0)
-            .astype(int)
-            .reset_index(name='Revenue(USD)')
-        )
-        avg_fare = filtered_df.groupby(['Region_AI'])['LY Act Avg Fare'].mean().reset_index(name='AvgFare')
-
-        # Merge the grouped data on Region_AI
-        merged_df = sum_pax.merge(sum_revenue, on='Region_AI').merge(avg_fare, on='Region_AI')
-
-        # Reshape the data to keep `Region_AI` as rows and metrics as columns
-        final_table = merged_df
-
-        # Display the final table
-        st.subheader(f"Region-wise Metrics for MonthM_LY: {MonthM_LY}")
-        st.dataframe(final_table)
-
-# Button to trigger both functions
-if st.button('Generate Fare and Pax Graphs'):
-    avg_fare(FROM_CITY, TO_CITY, Month)
-    pax(FROM_CITY, TO_CITY, Month)
-
-# Button to generate the Pax table for selected MonthM_LY
-if st.button('Generate Pax Table for MonthM_LY'):
-    pax_table_monthly(MonthM_LY)
+# Button to trigger all functions in one click
+if st.button('Generate Insights'):
+    avg_fare(FROM_CITY, TO_CITY, Month)  # Generate Fare and Pax Graphs
+    pax(FROM_CITY, TO_CITY, Month)       # Generate Pax Graphs and Table
+    pax_table_monthly(MonthM_LY)         # Generate Pax Table for selected MonthM_LY
