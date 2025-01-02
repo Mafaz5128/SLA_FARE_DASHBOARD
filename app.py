@@ -29,6 +29,7 @@ df = pd.read_excel('AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', head
 from_city_options = df['FROM_CITY'].unique()
 month_options = df['Month'].unique()
 monthm_ly_options = df['MonthM_LY'].unique()
+available_snap_dates = df.columns[18:34]
 
 # Sidebar for filters
 st.sidebar.header('Filter Options')
@@ -36,6 +37,8 @@ FROM_CITY = st.sidebar.selectbox('Select From City:', from_city_options)
 TO_CITY = st.sidebar.selectbox('Select To City:', df[df['FROM_CITY'] == FROM_CITY]['TO_CITY'].unique())
 Month = st.sidebar.selectbox('Select Month:', month_options)
 MonthM_LY = st.sidebar.selectbox('Select MonthM_LY:', monthm_ly_options)
+year_type = st.selectbox("Select Year Type", ('ly', 'ty'))  
+snap_date_name = st.selectbox("Select Snap Date", available_snap_dates)
 
 # Function for Avg Fare Graphs and Table
 # Function for Avg Fare Graphs and Table with Bollinger Bands
@@ -236,8 +239,6 @@ def pax_table_monthly(MonthM_LY):
         # Display the final table below the Pax and Fare tables
         st.subheader(f"Region-wise Metrics for MonthM_LY: {MonthM_LY}")
         st.dataframe(final_table)
-import streamlit as st
-import pandas as pd
 
 # Assuming you have the DataFrame 'df' and filtered_df already available
 
