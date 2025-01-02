@@ -83,7 +83,7 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     # Add prediction using a linear trend
     # Prepare the data for prediction
     dates = np.arange(len(xorder)).reshape(-1, 1)
-    fare_avg_ty = row_1_reversed.values /row_2_reversed.values
+    fare_avg_ty = row_1_reversed.values
 
     # Train a linear regression model
     model = LinearRegression()
