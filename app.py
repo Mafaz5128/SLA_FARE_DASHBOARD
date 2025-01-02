@@ -193,21 +193,32 @@ def pax(FROM_CITY, TO_CITY, Month):
 
 # Function for Pax Table Monthly LY
 def pax_table_monthly(MonthM_LY):
-    month = df[df["MonthM_LY"] == MonthM_LY]
+    # Filter the dataframe by MonthM_LY
+    filtered_df = df[df['MonthM_LY'] == MonthM_LY]
+    
+    if filtered_df.empty:
+        st.warning(f"No data found for the selected MonthM_LY: {MonthM_LY}.")
+    else:
+        # Group and calculate metrics for the filtered data
+        sum_pax = filtered_df.groupby(['Region_AI'])['PAX LY'].sum().reset_index(name='Pax')
+        sum_revenue = (
+            filtered_df.groupby(['Region_AI'])['Revenue_USD LY']
+            .sum()
+            .round(0)
+            .astype(int)
+            .reset_index(name='Revenue(USD)')
+        )
+        avg_fare = filtered_df.groupby(['Region_AI'])['LY Act Avg Fare'].mean().reset_index(name='AvgFare')
 
-    # Drop unnecessary columns
-    Month_Fare = month.drop(
-        [
-            'SEG KEY', 'SEG KEY LY', 'MonthM_LY', 'Year', 'Month', 'Revenue_USD ',
-            "29Dec'24", "29Dec'23", "29Dec'24.", "29Dec'23.", 'Revenue_USD LY'
-        ],
-        axis=1
-    )
+        # Merge the grouped data on Region_AI
+        merged_df = sum_pax.merge(sum_revenue, on='Region_AI').merge(avg_fare, on='Region_AI')
 
-    # Create table
-    pax_monthly = Month_Fare[['FROM_CITY', 'TO_CITY', 'PAX_TY', 'PAX LY', 'MonthM_LY']]
-    st.subheader("Monthly Pax Data for LY")
-    st.dataframe(pax_monthly)
+        # Reshape the data to keep `Region_AI` as rows and metrics as columns
+        final_table = merged_df
+
+        # Display the final table
+        st.subheader(f"Region-wise Metrics for MonthM_LY: {MonthM_LY}")
+        st.dataframe(final_table)
 
 # Handle button click to generate insights
 if st.sidebar.button('Generate Insights'):
