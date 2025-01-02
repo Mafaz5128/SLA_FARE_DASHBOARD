@@ -110,7 +110,20 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
 
     # Plot the extended graph
     fig1 = go.Figure()
-    fig1.add_trace(go.Scatter(x=extended_xorder, y=extended_fare_avg_ty, mode='lines+markers', name="Fare Avg - TY (With Prediction)"))
+
+    # Plot actual data points
+    fig1.add_trace(go.Scatter(
+        x=xorder, y=fare_avg_ty, mode='lines+markers', name="Fare Avg - TY",
+        line=dict(color='white')
+    ))
+
+    # Plot predicted data points
+    fig1.add_trace(go.Scatter(
+        x=future_snap_dates, y=predictions, mode='lines+markers', name="Predictions",
+        line=dict(color='blue', dash='dash')  # Prediction line in blue and dashed
+    ))
+
+    # Add other lines
     fig1.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Fare Avg - LY"))
     fig1.add_trace(go.Scatter(x=extended_xorder, y=extended_rolling_mean, mode='lines', name="MA - TY", line=dict(dash='dot', color='orange')))
     fig1.add_trace(go.Scatter(x=extended_xorder, y=extended_upper_band, mode='lines', name="Upper Bollinger Band", line=dict(color='green', dash='dash')))
