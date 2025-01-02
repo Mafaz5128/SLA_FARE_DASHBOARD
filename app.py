@@ -36,7 +36,6 @@ st.markdown(
 
 # Load data from the Excel file
 df = pd.read_excel('AVG FARE As at 29Dec Snap.xlsx', sheet_name='AVG_FARE', header=3)
-df.dropna()
 # Dropdown options
 from_city_options = df['FROM_CITY'].unique()
 month_options = df['Month'].unique()
@@ -84,7 +83,7 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     # Add prediction using a linear trend
     # Prepare the data for prediction
     dates = np.arange(len(xorder)).reshape(-1, 1)
-    fare_avg_ty = row_1_reversed /row_2_reversed
+    fare_avg_ty = row_1_reversed.values /row_2_reversed.values
 
     # Train a linear regression model
     model = LinearRegression()
