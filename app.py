@@ -224,6 +224,18 @@ def pax(FROM_CITY, TO_CITY, Month):
         st.dataframe(pax_data)
 
 # Function for Pax Table Monthly LY
+if st.sidebar.button('Generate Insights-1'):
+    try:
+        # Print selected filter values for debugging
+        st.write(f"FROM_CITY: {FROM_CITY}, TO_CITY: {TO_CITY}, Month: {Month}")
+        
+        # Generate Fare and Pax insights
+        avg_fare(FROM_CITY, TO_CITY, Month)  # Generate Fare and Pax Graphs
+        pax(FROM_CITY, TO_CITY, Month)       # Generate Pax Graphs and Table
+        
+    except Exception as e:
+        st.error(f"Error while generating insights: {e}")
+
 def pax_table_monthly(MonthM_LY):
     # Filter the dataframe by MonthM_LY
     filtered_df = df[df['MonthM_LY'] == MonthM_LY]
@@ -312,20 +324,6 @@ def generate_table_by_snap_date(year_type, snap_date_name, month):
     st.write(f"Region-wise Metrics for Snap Date: {snap_date_name} and Month: {month}")
     st.dataframe(result_table)
 
-
-# Handle button click to generate insights
-# Separate "Generate Insights" buttons for the two sections
-if st.sidebar.button('Generate Insights-1'):
-    try:
-        # Print selected filter values for debugging
-        st.write(f"FROM_CITY: {FROM_CITY}, TO_CITY: {TO_CITY}, Month: {Month}")
-        
-        # Generate Fare and Pax insights
-        avg_fare(FROM_CITY, TO_CITY, Month)  # Generate Fare and Pax Graphs
-        pax(FROM_CITY, TO_CITY, Month)       # Generate Pax Graphs and Table
-        
-    except Exception as e:
-        st.error(f"Error while generating insights: {e}")
 
 if st.sidebar.button('Generate Insights-2'):
     try:
