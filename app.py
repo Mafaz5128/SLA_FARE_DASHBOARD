@@ -37,8 +37,8 @@ FROM_CITY = st.sidebar.selectbox('Select From City:', from_city_options)
 TO_CITY = st.sidebar.selectbox('Select To City:', df[df['FROM_CITY'] == FROM_CITY]['TO_CITY'].unique())
 Month = st.sidebar.selectbox('Select Month:', month_options)
 MonthM_LY = st.sidebar.selectbox('Select MonthM_LY:', monthm_ly_options)
-year_type = st.selectbox("Select Year Type", ('ly', 'ty'))  
-snap_date_name = st.selectbox("Select Snap Date", available_snap_dates)
+year_type = st.sidebar.selectbox("Select Year Type", ('ly', 'ty'))  
+snap_date_name = st.sidebar.selectbox("Select Snap Date", available_snap_dates)
 
 # Function for Avg Fare Graphs and Table
 # Function for Avg Fare Graphs and Table with Bollinger Bands
