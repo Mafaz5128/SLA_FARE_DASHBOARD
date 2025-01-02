@@ -38,6 +38,7 @@ Month = st.sidebar.selectbox('Select Month:', month_options)
 MonthM_LY = st.sidebar.selectbox('Select MonthM_LY:', monthm_ly_options)
 
 # Function for Avg Fare Graphs and Table
+# Function for Avg Fare Graphs and Table with Bollinger Bands
 def avg_fare(FROM_CITY, TO_CITY, Month):
     month = df[df["Month"] == Month]
 
@@ -63,12 +64,20 @@ def avg_fare(FROM_CITY, TO_CITY, Month):
     row_2_reversed = row_2.iloc[::-1]
     difference = row_1_reversed.values - row_2_reversed.values
 
-    # Fare Average Graph
+    # Calculate Bollinger Bands for Fare Average - TY
+    rolling_mean = row_1_reversed.rolling(window=3).mean()
+    rolling_std = row_1_reversed.rolling(window=3).std()
+    upper_band = rolling_mean + (2 * rolling_std)
+    lower_band = rolling_mean - (2 * rolling_std)
+
+    # Fare Average Graph with Bollinger Bands
     fig1 = go.Figure()
     fig1.add_trace(go.Scatter(x=xorder, y=row_1_reversed.values, mode='lines+markers', name="Fare Average - TY"))
     fig1.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Fare Average - LY"))
-    fig1.add_trace(go.Scatter(x=xorder, y=row_1_reversed.rolling(window=3).mean(), mode='lines', name="MA - TY", line=dict(dash='dot', color='orange')))
-    fig1.add_trace(go.Scatter(x=xorder, y=row_2_reversed.rolling(window=3).mean(), mode='lines', name="MA - LY", line=dict(dash='dot', color='yellow')))
+    fig1.add_trace(go.Scatter(x=xorder, y=rolling_mean, mode='lines', name="MA - TY", line=dict(dash='dot', color='orange')))
+    fig1.add_trace(go.Scatter(x=xorder, y=rolling_mean, mode='lines', name="MA - LY", line=dict(dash='dot', color='yellow')))
+    fig1.add_trace(go.Scatter(x=xorder, y=upper_band, mode='lines', name="Upper Bollinger Band", line=dict(color='green', dash='dash')))
+    fig1.add_trace(go.Scatter(x=xorder, y=lower_band, mode='lines', name="Lower Bollinger Band", line=dict(color='red', dash='dash')))
     horizontal_value = round(row.iloc[0, 3], 2)
     fig1.add_hline(y=horizontal_value, line=dict(color='red', dash='dash'), annotation_text=f"Last Year Avg Fare: {horizontal_value}")
     fig1.update_layout(
