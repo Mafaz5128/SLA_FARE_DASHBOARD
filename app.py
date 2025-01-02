@@ -124,6 +124,9 @@ def pax(FROM_CITY, TO_CITY, Month):
     fig3.add_trace(go.Scatter(x=xorder, y=row_2_reversed.values, mode='lines+markers', name="Pax - LY"))
     fig3.add_trace(go.Scatter(x=xorder, y=row_1_reversed.rolling(window=3).mean(), mode='lines', name="MA - TY", line=dict(dash='dot', color='orange')))
     fig3.add_trace(go.Scatter(x=xorder, y=row_2_reversed.rolling(window=3).mean(), mode='lines', name="MA - LY", line=dict(dash='dot', color='yellow')))
+    horizontal_value = round(row.iloc[0,4], 2)
+    fig3.add_hline(y=horizontal_value, line=dict(color='red', dash='dash'), annotation_text=f"Last Year Pax Count: {horizontal_value}")
+
     fig3.update_layout(
         title=f"Behavior of Pax - {FROM_CITY} to {TO_CITY}",
         xaxis_title="Snap Dates",
