@@ -46,6 +46,19 @@ st.sidebar.header('Average Fare Pax Trends')
 FROM_CITY = st.sidebar.selectbox('Select From City:', from_city_options)
 TO_CITY = st.sidebar.selectbox('Select To City:', df[df['FROM_CITY'] == FROM_CITY]['TO_CITY'].unique())
 Month = st.sidebar.selectbox('Select Month:', month_options)
+if st.sidebar.button('Generate: Average Fare, and Pax Trends'):
+    try:
+        # Print selected filter values for debugging
+        st.write(f"FROM_CITY: {FROM_CITY}, TO_CITY: {TO_CITY}, Month: {Month}")
+        
+        # Generate Fare and Pax insights
+        avg_fare(FROM_CITY, TO_CITY, Month)  # Generate Fare and Pax Graphs
+        pax(FROM_CITY, TO_CITY, Month)       # Generate Pax Graphs and Table
+        
+    except Exception as e:
+        st.error(f"Error while generating insights: {e}")
+
+
 st.sidebar.header('Region Wise Metrics')
 MonthM_LY = st.sidebar.selectbox('Select Month - LY:', monthm_ly_options)
 year_type = st.sidebar.selectbox("Select Year Type", ["LY", "TY"])
@@ -304,17 +317,6 @@ def pax(FROM_CITY, TO_CITY, Month):
         st.dataframe(pax_data)
 
 # Function for Pax Table Monthly LY
-if st.sidebar.button('Generate: Average Fare, and Pax Trends'):
-    try:
-        # Print selected filter values for debugging
-        st.write(f"FROM_CITY: {FROM_CITY}, TO_CITY: {TO_CITY}, Month: {Month}")
-        
-        # Generate Fare and Pax insights
-        avg_fare(FROM_CITY, TO_CITY, Month)  # Generate Fare and Pax Graphs
-        pax(FROM_CITY, TO_CITY, Month)       # Generate Pax Graphs and Table
-        
-    except Exception as e:
-        st.error(f"Error while generating insights: {e}")
 
 def pax_table_monthly(MonthM_LY):
     # Filter the dataframe by MonthM_LY
