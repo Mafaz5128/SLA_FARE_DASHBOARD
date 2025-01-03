@@ -384,7 +384,7 @@ month_options = df['Month'].unique()
 monthm_ly_options = df['MonthM_LY'].unique()
 
 # Sidebar for filters
-st.sidebar.header('Average Fare Pax Trends')
+st.sidebar.header('Average Fare, and Pax Trends')
 FROM_CITY = st.sidebar.selectbox('Select From City:', from_city_options)
 TO_CITY = st.sidebar.selectbox('Select To City:', df[df['FROM_CITY'] == FROM_CITY]['TO_CITY'].unique())
 Month = st.sidebar.selectbox('Select Month:', month_options)
@@ -402,7 +402,7 @@ if st.sidebar.button('Generate: Average Fare, and Pax Trends'):
 
 
 st.sidebar.header('Region Wise Metrics')
-MonthM_LY = st.sidebar.selectbox('Select Month - LY:', monthm_ly_options)
+MonthM_LY = st.sidebar.selectbox('Actual Metrics of LY - Select Month:', monthm_ly_options)
 year_type = st.sidebar.selectbox("Select Year Type", ["LY", "TY"])
 snap_date_name = st.sidebar.selectbox("Select Snap Date", ['29-Dec', '22-Dec', '15-Dec', '08-Dec', '01-Dec', '24-Nov', '17-Nov', '10-Nov', '03-Nov'])
 month = st.sidebar.selectbox("Select Month -TY", df['Month'].unique())
