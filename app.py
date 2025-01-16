@@ -375,7 +375,7 @@ def generate_table_by_snap_date(year_type, snap_date_name, month):
     result_table = sum_pax.merge(avg_fare, on=['Region_AI', 'Month'], how='left')
 
     # Display the final table in Streamlit
-    st.write(f"Region-wise Metrics for Snap Date: {snap_date_name} and Month: {month}")
+    st.write(f"Region-wise Metrics for Snap Date: {snap_date_name} and Month: {Month}")
     st.dataframe(result_table)
     
     # Dropdown options
