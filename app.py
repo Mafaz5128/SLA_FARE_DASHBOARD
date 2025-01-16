@@ -400,13 +400,13 @@ if st.sidebar.button('Generate: Average Fare, and Pax Trends'):
     except Exception as e:
         st.error(f"Error while generating insights: {e}")
 
-
-st.sidebar.header('Region Wise Metrics')
-MonthM_LY = st.sidebar.selectbox('Actual Metrics of LY - Select Month:', monthm_ly_options)
 year_type = st.sidebar.selectbox("Select Year Type", ["LY", "TY"])
 snap_date_name = st.sidebar.selectbox("Select Snap Date", ['29-Dec', '22-Dec', '15-Dec', '08-Dec', '01-Dec', '24-Nov', '17-Nov', '10-Nov', '03-Nov'])
-month = st.sidebar.selectbox("Select Month -TY", df['Month'].unique())
-
+a1, a2 =st.columns(2)
+a1.sidebar.header('Region Wise Metrics-This Year')
+month = a1.sidebar.selectbox("Select Month -TY", df['Month'].unique())
+a2.sidebar.header('Region Wise Metrics-Last Year')
+MonthM_LY = a2.sidebar.selectbox('Actual Metrics of LY - Select Month:', monthm_ly_options)
 
 if st.sidebar.button('Generate : Region Wise Metrics'):
     try:
